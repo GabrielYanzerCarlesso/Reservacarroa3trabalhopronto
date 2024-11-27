@@ -162,13 +162,16 @@ public class Main {
         String senha = scanner.nextLine();
         usuarioLogado = usuarios.stream()
                 .filter(u -> u.email.equals(email) && u.senha.equals(senha))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
         if (usuarioLogado != null) {
             System.out.println("Login realizado com sucesso!");
+            System.out.printf("Bem-vindo, %s!%n", usuarioLogado.nome); // Exibe o nome do usuário
         } else {
             System.out.println("Credenciais inválidas.");
         }
     }
+
 
     private static void cadastrarVeiculo() {
         if (verificarLogin()) return;
@@ -282,16 +285,27 @@ public class Main {
     }
 
     private static void verVeiculosReservados() {
-        if (verificarLogin()) return;
-
-        if (usuarioLogado.veiculosReservados.isEmpty()) {
-            System.out.println("Nenhum veículo reservado.");
-        } else {
-            System.out.println("Veículos Reservados:");
-            usuarioLogado.veiculosReservados.forEach(v ->
-                    System.out.printf("Modelo: %s (%d) | Placa: %s%n", v.nome, v.ano, v.placa));
+        if (!verificarLogin()) { // Verifica se o usuário está logado
+            if (usuarioLogado.veiculosReservados.isEmpty()) { // Verifica se há veículos reservados
+                System.out.println("Nenhum veículo reservado.");
+            } else {
+                System.out.println("Veículos Reservados:");
+                usuarioLogado.veiculosReservados.forEach(v -> {
+                    // Exibe os detalhes de cada veículo reservado
+                    System.out.printf(
+                            "Modelo: %s (%d) | Placa: %s | Diária: R$ %.2f |Local de Devolução: %s (%s)%n",
+                            v.nome,                  // Nome do veículo
+                            v.ano,                   // Ano do veículo
+                            v.placa,                 // Placa do veículo
+                            v.diaria,                // Valor da diária
+                            v.agencia.nome,          // Nome da agência de devolução
+                            v.agencia.endereco       // Endereço da agência
+                    );
+                });
+            }
         }
     }
+
 
     private static boolean verificarLogin() {
         if (usuarioLogado == null) {
